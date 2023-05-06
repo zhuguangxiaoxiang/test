@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.OrderMapper">
+    <resultMap id="OrderResultMap" type="com.entiy.Order">
+        <id column="id" property="id"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result property="nickname" column="nickname"/>
+        <result property="mobile" column="mobile"/>
+        <result column="product_name" property="productName"/>
+        <result column="total_price" property="totalPrice"/>
+        <result column="count" property="count"/>
+        <result column="unit_price" property="unitPrice"/>
+        <result column="status" property="status"/>
+        <result column="pay_type" property="payType"/>
+    </resultMap>
+    <select id="getOrderList" resultMap="OrderResultMap">
+        SELECT
+            p_order.id,
+            p_order.created_at,
+            p_order.updated_at,
+            p_order.user_id,
+            p_user.nickname,
+            p_user.mobile,
+            p_order.product_name,
+            p_order.total_price,
+            p_order.count,
+            p_order.unit_price,
+            p_order.status,
+            p_order.pay_type
+        FROM p_order JOIN p_user ON p_order.user_id = p_user.id
+        LIMIT #{page}, #{pers}
+    </select>
+
+    <select id="getOrderCount" resultType="int">
+        SELECT COUNT(*) FROM p_order
+    </select>
+    
+    <select id="getLastOrderList" resultMap="OrderResultMap">
+        SELECT
+            p_user.id,
+            p_user.created_at,
+            p_user.updated_at,
+            p_user.deleted_at,
+            p_user.mobile,
+            p_user.nickname,
+            t.id,
+            t.created_at last_created_at,
+            t.updated_at last_updated_at,
+            t.user_id,
+            t.product_name
+        FROM p_user
+                 LEFT JOIN (
+            SELECT *
+            FROM p_order
+            WHERE (user_id, updated_at) IN (
+                SELECT user_id, MAX(updated_at)
+                FROM p_order
+                GROUP BY user_id
+            )
+        ) t ON p_user.id = t.user_id
+    </select>
+
+
+</mapper>
