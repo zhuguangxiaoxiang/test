@@ -7,8 +7,8 @@
         <id column="id" property="id"/>
         <result column="created_at" property="createdAt"/>
         <result column="updated_at" property="updatedAt"/>
-        <result property="nickname" column="nickname"/>
-        <result property="mobile" column="mobile"/>
+        <result column="nickname" property="nickname"/>
+        <result column="mobile" property="mobile"/>
         <result column="product_name" property="productName"/>
         <result column="total_price" property="totalPrice"/>
         <result column="count" property="count"/>
@@ -52,7 +52,7 @@
             t.user_id,
             t.product_name
         FROM p_user
-                 LEFT JOIN (
+            LEFT JOIN (
             SELECT *
             FROM p_order
             WHERE (user_id, updated_at) IN (

@@ -19,9 +19,7 @@ public class OrderController {
     @PostMapping("/list/{page}/{pers}")
     public Map<String, Object> getOrderList(@PathVariable int page, @PathVariable int pers) {
         List<Order> orders = orderService.getOrderList(page, pers);
-        for (Order order : orders) {
-            System.out.println(order);
-        }
+        orders.forEach(System.out::println);
         int total = orderService.getOrderCount();
         Map<String, Object> result = new HashMap<>();
         result.put("total", total);
